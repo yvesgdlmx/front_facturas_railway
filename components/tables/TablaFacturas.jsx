@@ -1,5 +1,5 @@
 import React from 'react';
-import { FaSpinner } from 'react-icons/fa';
+import { FaAngleDoubleLeft, FaAngleDoubleRight, FaChevronLeft, FaChevronRight, FaSpinner } from 'react-icons/fa';
 const TablaFacturas = ({
   mes,
   onMesChange,
@@ -16,6 +16,91 @@ const TablaFacturas = ({
   paginaActual,
   paginar
 }) => {
+  // Número máximo de botones a mostrar a cada lado de la página actual
+  const maxBotonesAlrededor = 2;
+  // Función para generar los botones de paginación
+  const generarBotonesPaginacion = () => {
+    let botones = [];
+    // Botón ir a la primera página
+    if (paginaActual > 1 + maxBotonesAlrededor) {
+      botones.push(
+        <button
+          key="first"
+          onClick={() => paginar(1)}
+          className="px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 hover:bg-blue-500 hover:text-white"
+        >
+          <FaAngleDoubleLeft />
+        </button>
+      );
+    }
+    // Botón de página "anterior"
+    botones.push(
+      <button
+        key="prev"
+        onClick={() => paginar(paginaActual - 1)}
+        className={`px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 ${
+          paginaActual === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-500 hover:text-white"
+        }`}
+        disabled={paginaActual === 1}
+      >
+        <FaChevronLeft />
+      </button>
+    );
+    // Determina el rango de páginas a mostrar
+    const desde = Math.max(1, paginaActual - maxBotonesAlrededor);
+    const hasta = Math.min(totalPaginas, paginaActual + maxBotonesAlrededor);
+    // Si existe un salto entre la primera página y el rango
+    if (desde > 1) {
+      botones.push(
+        <span key="ellipsis-left" className="px-2">...</span>
+      );
+    }
+    for (let idx = desde; idx <= hasta; idx++) {
+      botones.push(
+        <button
+          key={idx}
+          onClick={() => paginar(idx)}
+          className={`px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 ${
+            paginaActual === idx ? "bg-blue-500 text-white" : "hover:bg-blue-500 hover:text-white"
+          }`}
+        >
+          {idx}
+        </button>
+      );
+    }
+    // Si existe un salto entre el rango y la última página
+    if (hasta < totalPaginas) {
+      botones.push(
+        <span key="ellipsis-right" className="px-2">...</span>
+      );
+    }
+    // Botón de página "siguiente"
+    botones.push(
+      <button
+        key="next"
+        onClick={() => paginar(paginaActual + 1)}
+        className={`px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 ${
+          paginaActual >= totalPaginas ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-500 hover:text-white"
+        }`}
+        disabled={paginaActual >= totalPaginas}
+      >
+        <FaChevronRight />
+      </button>
+    );
+    // Botón ir a la última página
+    if (paginaActual < totalPaginas - maxBotonesAlrededor) {
+      botones.push(
+        <button
+          key="last"
+          onClick={() => paginar(totalPaginas)}
+          className="px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 hover:bg-blue-500 hover:text-white"
+        >
+          <FaAngleDoubleRight />
+        </button>
+      );
+    }
+    return botones;
+  };
   return (
     <div className="bg-white py-5 px-14 rounded overflow-x-auto" style={{ minHeight: '300px' }}>
       {/* Sección de selectores: Mes, búsqueda y columna de búsqueda */}
@@ -25,7 +110,7 @@ const TablaFacturas = ({
           <label htmlFor="mes" className="text-sm text-gray-600">Mes:</label>
           <select
             id="mes"
-            value={mes}a
+            value={mes}
             onChange={onMesChange}
             className="bg-gray-50 text-gray-600 text-sm rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 p-1.5"
           >
@@ -69,7 +154,6 @@ const TablaFacturas = ({
           </select>
         </div>
       </div>
-      
       {/* Tabla de datos o indicador de carga */}
       {cargando ? (
         <div className="flex items-center justify-center py-20">
@@ -117,42 +201,10 @@ const TablaFacturas = ({
       {/* Información y paginación */}
       <div className="mt-4 flex items-center justify-between">
         <div className="text-sm text-gray-600">
-          Mostrando{" "}
-          {registrosActuales.length > 0
-            ? `${indicePrimerRegistro + 1} - ${Math.min(indiceUltimoRegistro, totalRegistros)}`
-            : "0"}{" "}
-          de {totalRegistros} registros
+          Mostrando {registrosActuales.length > 0 ? `${indicePrimerRegistro + 1} - ${Math.min(indiceUltimoRegistro, totalRegistros)}` : "0"} de {totalRegistros} registros
         </div>
-        <div className="flex items-center space-x-1">
-          <button
-            onClick={() => paginar(paginaActual - 1)}
-            className={`px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 ${
-              paginaActual === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-500 hover:text-white"
-            }`}
-            disabled={paginaActual === 1}
-          >
-            Atrás
-          </button>
-          {Array.from({ length: totalPaginas }, (_, idx) => (
-            <button
-              key={idx}
-              onClick={() => paginar(idx + 1)}
-              className={`px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 ${
-                paginaActual === idx + 1 ? "bg-blue-500 text-white" : "hover:bg-blue-500 hover:text-white"
-              }`}
-            >
-              {idx + 1}
-            </button>
-          ))}
-          <button
-            onClick={() => paginar(paginaActual + 1)}
-            className={`px-3 py-1 border border-gray-300 rounded text-sm transition duration-500 ${
-              paginaActual >= totalPaginas ? "opacity-50 cursor-not-allowed" : "hover:bg-blue-500 hover:text-white"
-            }`}
-            disabled={paginaActual >= totalPaginas}
-          >
-            Siguiente
-          </button>
+        <div className="flex items-center space-x-1 text-gray-500">
+          {generarBotonesPaginacion()}
         </div>
       </div>
     </div>
