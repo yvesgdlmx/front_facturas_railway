@@ -19,6 +19,9 @@ switch (location.pathname) {
   case '/facturacion-ink-agrupacion-diaria':
     sectionTitle = 'INK - Agrupación Diaria';
     break;
+  case '/facturacion-ink-mermas': 
+    sectionTitle = 'INK - Mermas';
+    break;
   default:
     sectionTitle = "";
 }
@@ -79,6 +82,17 @@ switch (location.pathname) {
                     }
                   >
                     INK - Agrupación Diaria
+                  </NavLink>
+                </li>
+                 <li>
+                  <NavLink
+                    to="/facturacion-ink-mermas"
+                    className={({ isActive }) =>
+                      "block px-6 py-2 rounded " +
+                      (isActive ? "bg-gray-200 text-gray-700" : "text-gray-500 hover:bg-gray-100")
+                    }
+                  >
+                    INK - Mermas
                   </NavLink>
                 </li>
               </ul>
