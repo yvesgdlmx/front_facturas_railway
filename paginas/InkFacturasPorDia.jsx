@@ -13,12 +13,11 @@ const InkFacturasPorDia = () => {
     'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
-  // Estados locales: aquí calculamos el mes anterior al actual
+  // Estado para el mes (calculado como el mes anterior al actual)
   const [mes, setMes] = useState(() => {
     const fechaActual = new Date();
     const mesActual = fechaActual.getMonth() + 1; // getMonth() es 0-indexado
     const mesAnterior = mesActual === 1 ? 12 : mesActual - 1;
-    // Aseguramos formato de dos dígitos
     return mesAnterior < 10 ? `0${mesAnterior}` : `${mesAnterior}`;
   });
   const [totalesPorDia, setTotalesPorDia] = useState([]);
@@ -48,11 +47,12 @@ const InkFacturasPorDia = () => {
     setColumnaBusqueda(e.target.value);
     setPaginaActual(1);
   };
-  // Función para obtener registros del mes y agruparlos por día
+  // Función para obtener registros del mes y agruparlos por día (incluyendo click_fee)
   const obtenerYAgruparRegistros = async () => {
     try {
       setCargando(true);
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
+      
       // Agrupar por día usando la fecha formateada "yyyy-MM-dd"
       const agrupados = data.reduce((acc, registro) => {
         const fechaISO = parseISO(registro.ShipDate);
@@ -62,11 +62,13 @@ const InkFacturasPorDia = () => {
             CoatingsPrice: 0,
             TintPrice: 0,
             LensPrice: 0,
+            click_fee: 0  // Agregamos click_fee a la agrupación
           };
         }
         acc[fechaFormateada].CoatingsPrice += parseFloat(registro.CoatingsPrice || 0);
         acc[fechaFormateada].TintPrice += parseFloat(registro.TintPrice || 0);
         acc[fechaFormateada].LensPrice += parseFloat(registro.LensPrice || 0);
+        acc[fechaFormateada].click_fee += parseFloat(registro.click_fee || 0);
         return acc;
       }, {});
       const totales = Object.keys(agrupados).map(fecha => ({
@@ -99,17 +101,17 @@ const InkFacturasPorDia = () => {
   const indiceUltimoRegistro = paginaActual * registrosPorPagina;
   const indicePrimerRegistro = indiceUltimoRegistro - registrosPorPagina;
   const registrosActuales = registrosFiltrados.slice(indicePrimerRegistro, indiceUltimoRegistro);
-  
   const paginar = (nuevaPagina) => {
     if (nuevaPagina > 0 && nuevaPagina <= totalPaginas) {
       setPaginaActual(nuevaPagina);
     }
   };
-  // Cálculo de totales generales
+  // Cálculo de totales generales (incluyendo click_fee)
   const totalCoatingsPrice = totalesPorDia.reduce((acc, item) => acc + item.CoatingsPrice, 0).toFixed(2);
   const totalTintPrice = totalesPorDia.reduce((acc, item) => acc + item.TintPrice, 0).toFixed(2);
   const totalLensPrice = totalesPorDia.reduce((acc, item) => acc + item.LensPrice, 0).toFixed(2);
-  const totalGeneral = totalLensPrice;
+  const totalClickFee = totalesPorDia.reduce((acc, item) => acc + item.click_fee, 0).toFixed(2);
+  const totalGeneral = totalLensPrice; // O bien, definir otro cálculo según requieras
   // Obtiene el nombre del mes a partir del valor numérico almacenado en el estado "mes"
   const nombreMes = monthNames[parseInt(mes, 10) - 1];
   return (
@@ -171,11 +173,12 @@ const InkFacturasPorDia = () => {
           </PDFDownloadLink>
         </div>
       </div>
-      {/* Sección de Totales */}
+      {/* Sección de Totales (incluyendo totalClickFee) */}
       <Totales 
         totalLensPrice={totalLensPrice} 
         totalCoatingsPrice={totalCoatingsPrice} 
         totalTintPrice={totalTintPrice} 
+        totalClickFee={totalClickFee}
         totalGeneral={totalGeneral} 
       />
       {/* Componente TablaFacturasPorDia */}

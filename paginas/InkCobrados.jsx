@@ -89,13 +89,17 @@ const InkCobrados = () => {
       setPaginaActual(nuevaPagina);
     }
   };
-  // Cálculo de totales
+  // Cálculo de totales (en InkCobrados)
   const totalLensPrice = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
   const totalCoatingsPrice = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
   const totalTintPrice = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
+  // Suma total de click_fee
+  const totalClickFee = registros.reduce((acumulado, registro) =>
+    acumulado + parseFloat(registro.click_fee || 0), 0).toFixed(2);
+  // Conservamos totalGeneral (en tu caso se usa totalLensPrice)
   const totalGeneral = totalLensPrice;
   
   // Obtener el nombre del mes a partir del valor numérico
@@ -138,6 +142,7 @@ const InkCobrados = () => {
         totalLensPrice={totalLensPrice} 
         totalCoatingsPrice={totalCoatingsPrice} 
         totalTintPrice={totalTintPrice} 
+        totalClickFee={totalClickFee}
         totalGeneral={totalGeneral} 
       />
       {/* Tercer contenedor: Componente TablaGenerica */}

@@ -97,14 +97,18 @@ const InkNoCobrados = () => {
       setPaginaActual(nuevaPagina);
     }
   };
-  // Cálculo de totales (aunque en registros no cobrados, normalmente sean 0)
-  const totalLensPrice = registros.reduce((acumulado, registro) =>
-    acumulado + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
-  const totalCoatingsPrice = registros.reduce((acumulado, registro) =>
-    acumulado + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
-  const totalTintPrice = registros.reduce((acumulado, registro) =>
-    acumulado + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
-  const totalGeneral = totalLensPrice;
+  // Cálculo de totales (en InkCobrados)
+const totalLensPrice = registros.reduce((acumulado, registro) =>
+  acumulado + parseFloat(registro.LensPrice || 0), 0).toFixed(2);
+const totalCoatingsPrice = registros.reduce((acumulado, registro) =>
+  acumulado + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
+const totalTintPrice = registros.reduce((acumulado, registro) =>
+  acumulado + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
+// Nuevo: Suma total de click_fee
+const totalClickFee = registros.reduce((acumulado, registro) =>
+  acumulado + parseFloat(registro.click_fee || 0), 0).toFixed(2);
+// Conservamos totalGeneral (en tu caso se usa totalLensPrice)
+const totalGeneral = totalLensPrice;
   // Obtener el nombre del mes a partir del valor numérico
   const nombreMes = monthNames[parseInt(mes, 10) - 1];
   return (
@@ -146,6 +150,7 @@ const InkNoCobrados = () => {
         totalLensPrice={totalLensPrice} 
         totalCoatingsPrice={totalCoatingsPrice} 
         totalTintPrice={totalTintPrice} 
+        totalClickFee={totalClickFee}
         totalGeneral={totalGeneral} 
       />
       

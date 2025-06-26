@@ -21,9 +21,8 @@ const TablaFacturasPorDia = ({
       className="bg-white py-5 px-14 rounded overflow-x-auto"
       style={{ minHeight: "300px" }}
     >
-      {/* Sección de selectores: mes, búsqueda y columna de búsqueda con las opciones requeridas */}
+      {/* Sección de selectores */}
       <div className="mb-4 flex items-center justify-between">
-        {/* Selector de mes */}
         <div className="flex items-center space-x-2">
           <label htmlFor="mes" className="text-sm text-gray-600">
             Mes:
@@ -48,7 +47,6 @@ const TablaFacturasPorDia = ({
             <option value="12">Diciembre</option>
           </select>
         </div>
-        {/* Buscador y selector de columna. Se han dejado únicamente las columnas requeridas */}
         <div className="flex items-center space-x-2">
           <label htmlFor="busqueda" className="text-sm text-gray-600">
             Buscar:
@@ -73,7 +71,6 @@ const TablaFacturasPorDia = ({
           </select>
         </div>
       </div>
-      {/* Mostrar indicador de carga o la tabla de datos */}
       {cargando ? (
         <div className="flex items-center justify-center py-20">
           <FaSpinner className="animate-spin text-4xl text-blue-500" />
@@ -94,16 +91,18 @@ const TablaFacturasPorDia = ({
               <th className="px-4 py-2 border-b border-gray-200 text-center">
                 Lens Total
               </th>
+              <th className="px-4 py-2 border-b border-gray-200 text-center">
+                Click Fee
+              </th>
             </tr>
           </thead>
           <tbody className="text-center text-gray-600">
             {registrosActuales.length > 0 ? (
               registrosActuales.map((registro, indice) => {
-                // Nota: Se asume que en la data agrupada, la fecha se encuentra en "registro.fecha"
-                // y los valores monetarios se encuentran en registro.CoatingsPrice, registro.TintPrice y registro.LensPrice.
                 const coatingsTotal = parseFloat(registro.CoatingsPrice || 0);
                 const tintTotal = parseFloat(registro.TintPrice || 0);
                 const lensTotal = parseFloat(registro.LensPrice || 0);
+                const clickFeeTotal = parseFloat(registro.click_fee || 0);
                 return (
                   <tr
                     key={indice}
@@ -121,15 +120,15 @@ const TablaFacturasPorDia = ({
                     <td className="px-4 py-2 border-b border-gray-100">
                       ${lensTotal.toFixed(2)}
                     </td>
+                    <td className="px-4 py-2 border-b border-gray-100">
+                      ${clickFeeTotal.toFixed(2)}
+                    </td>
                   </tr>
                 );
               })
             ) : (
               <tr>
-                <td
-                  colSpan="4"
-                  className="py-4 text-gray-500"
-                >
+                <td colSpan="5" className="py-4 text-gray-500">
                   No hay registros para este mes
                 </td>
               </tr>
@@ -137,7 +136,6 @@ const TablaFacturasPorDia = ({
           </tbody>
         </table>
       )}
-      {/* Sección de información y paginación */}
       <div className="mt-4 flex items-center justify-between">
         <div className="text-sm text-gray-600">
           Mostrando{" "}
