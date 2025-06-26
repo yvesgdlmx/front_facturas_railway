@@ -7,7 +7,7 @@ const TablaFacturas = ({
   onBusquedaChange,
   columnaBusqueda,
   onColumnaBusquedaChange,
-  cargando,
+  cargando, 
   registrosActuales,
   totalRegistros,
   indicePrimerRegistro,
@@ -170,6 +170,7 @@ const TablaFacturas = ({
               <th className="px-4 py-2 border-b border-gray-200 text-center">Poder</th>
               <th className="px-4 py-2 border-b border-gray-200 text-center">TAT</th>
               <th className="px-4 py-2 border-b border-gray-200 text-center">Lens Total</th>
+              <th className="px-4 py-2 border-b border-gray-200 text-center">Click Fee</th>
             </tr>
           </thead>
           <tbody className="text-center text-gray-600">
@@ -178,6 +179,7 @@ const TablaFacturas = ({
                 const precioCoatings = parseFloat(registro.CoatingsPrice || 0);
                 const precioTint = parseFloat(registro.TintPrice || 0);
                 const precioLens = parseFloat(registro.LensPrice || 0);
+                const clickFee = parseFloat(registro.click_fee || 0);
                 return (
                   <tr key={indice} className="odd:bg-blue-50 even:bg-white hover:bg-blue-100">
                     <td className="px-4 py-2 border-b border-gray-100">{registro.ShipDate}</td>
@@ -187,12 +189,13 @@ const TablaFacturas = ({
                     <td className="px-4 py-2 border-b border-gray-100">{registro.Poder || 'N/A'}</td>
                     <td className="px-4 py-2 border-b border-gray-100">{parseFloat(registro.TAT || 0).toFixed(2)}</td>
                     <td className="px-4 py-2 border-b border-gray-100">${precioLens.toFixed(2)}</td>
+                    <td className="px-4 py-2 border-b border-gray-100">${clickFee.toFixed(2)}</td>
                   </tr>
                 );
               })
             ) : (
               <tr>
-                <td colSpan="7" className="py-4 text-gray-500">No hay registros para este mes</td>
+                <td colSpan="8" className="py-4 text-gray-500">No hay registros para este mes</td>
               </tr>
             )}
           </tbody>
