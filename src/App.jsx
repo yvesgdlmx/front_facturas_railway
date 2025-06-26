@@ -6,6 +6,7 @@ import './index.css';
 const InkCobrados = lazy(() => import('../paginas/InkCobrados'));
 const InkNoCobrados = lazy(() => import('../paginas/InkNoCobrados'));
 const InkFacturasPorDia = lazy(() => import('../paginas/InkFacturasPorDia'));
+const InkMermas = lazy(() => import('../paginas/InkMermas'))
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
             <Route index element={<InkCobrados />} />
             <Route path='/facturacion-ink-nocobrados' element={<InkNoCobrados />} />
             <Route path='/facturacion-ink-agrupacion-diaria' element={<InkFacturasPorDia />} />
+            <Route path='/facturacion-ink-mermas' element={<InkMermas />} />
           </Route>
         </Routes>
       </Suspense>
