@@ -52,7 +52,6 @@ const InkFacturasPorDia = () => {
     try {
       setCargando(true);
       const { data } = await clienteAxios(`/orders/get-month/${mes}`);
-      
       // Agrupar por día usando la fecha formateada "yyyy-MM-dd"
       const agrupados = data.reduce((acc, registro) => {
         const fechaISO = parseISO(registro.ShipDate);
@@ -111,7 +110,8 @@ const InkFacturasPorDia = () => {
   const totalTintPrice = totalesPorDia.reduce((acc, item) => acc + item.TintPrice, 0).toFixed(2);
   const totalLensPrice = totalesPorDia.reduce((acc, item) => acc + item.LensPrice, 0).toFixed(2);
   const totalClickFee = totalesPorDia.reduce((acc, item) => acc + item.click_fee, 0).toFixed(2);
-  const totalGeneral = totalLensPrice; // O bien, definir otro cálculo según requieras
+  // Nuevo total general que engloba totalLensPrice y totalClickFee
+  const totalGeneral = (parseFloat(totalLensPrice) + parseFloat(totalClickFee)).toFixed(2);
   // Obtiene el nombre del mes a partir del valor numérico almacenado en el estado "mes"
   const nombreMes = monthNames[parseInt(mes, 10) - 1];
   return (
@@ -173,7 +173,7 @@ const InkFacturasPorDia = () => {
           </PDFDownloadLink>
         </div>
       </div>
-      {/* Sección de Totales (incluyendo totalClickFee) */}
+      {/* Sección de Totales (componente Totales) */}
       <Totales 
         totalLensPrice={totalLensPrice} 
         totalCoatingsPrice={totalCoatingsPrice} 

@@ -99,9 +99,8 @@ const InkCobrados = () => {
   // Suma total de click_fee
   const totalClickFee = registros.reduce((acumulado, registro) =>
     acumulado + parseFloat(registro.click_fee || 0), 0).toFixed(2);
-  // Conservamos totalGeneral (en tu caso se usa totalLensPrice)
-  const totalGeneral = totalLensPrice;
-  
+  // Nuevo total general que engloba totalLensPrice más totalClickFee
+  const totalGeneral = (parseFloat(totalLensPrice) + parseFloat(totalClickFee)).toFixed(2);
   // Obtener el nombre del mes a partir del valor numérico
   const nombreMes = monthNames[parseInt(mes, 10) - 1];
   return (

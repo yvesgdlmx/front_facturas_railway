@@ -169,6 +169,8 @@ const PdfCobrados = ({ data }) => {
   const totalCoatingsPrice = data.reduce((acc, registro) => acc + parseFloat(registro.CoatingsPrice || 0), 0).toFixed(2);
   const totalTintPrice = data.reduce((acc, registro) => acc + parseFloat(registro.TintPrice || 0), 0).toFixed(2);
   const totalClickFee = data.reduce((acc, registro) => acc + parseFloat(registro.click_fee || 0), 0).toFixed(2);
+  // La suma de Grand Total: totalLensPrice + totalClickFee
+  const grandTotal = (parseFloat(totalLensPrice) + parseFloat(totalClickFee)).toFixed(2);
   // Verificar si data no está vacío y obtener la fecha del primer registro
   let formattedDate = '';
   if (data.length > 0 && data[0].ShipDate) {
@@ -264,12 +266,12 @@ const PdfCobrados = ({ data }) => {
             })}
           </View>
         </View>
-        {/* Sección de totales, incluyendo Total Click Fee */}
+        {/* Sección de totales, incluyendo Total Click Fee y Grand Total sumado */}
         <View style={styles.totalSection}>
           <Text style={styles.totalText}>Total Coatings: ${totalCoatingsPrice} -</Text>
           <Text style={styles.totalText}>Total Tint: ${totalTintPrice} -</Text>
           <Text style={styles.totalText}>Total Click Fee: ${totalClickFee} -</Text>
-          <Text style={styles.totalText}>Grand Total: ${totalLensPrice}</Text>
+          <Text style={styles.totalText}>Grand Total: ${grandTotal}</Text>
         </View>
       </Page>
     </Document>
